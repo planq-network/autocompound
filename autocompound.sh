@@ -17,7 +17,7 @@ NODE=$(planqd status | jq -r .NodeInfo.other.rpc_address)
 
 for (( ;; )); do
         echo -e "Get reward from Delegation"
-        echo -e "${password}\ny\n" | planqd tx distribution withdraw-rewards ${VALIDATOR_ADDRESS} --commission --gas="1000000" --gas-adjustment="1.15" --gas-prices="30000000000aplanq" --chain-id planq_7070-2 --from ${KEY_NAME} --node ${NODE} --yes
+        echo -e "${password}\ny\n" | planqd tx distribution withdraw-rewards ${VALIDATOR_ADDRESS} --commission --gas="1000000" --gas-adjustment="1.15" --gas-prices="30000000000aplanq" --chain-id planq_7070-2 --from ${KEY_NAME} --node ${NODE} --yes | grep "raw_log\|txhash"
 for (( timer=10; timer>0; timer-- ))
         do
                 printf "* sleep for ${RED_COLOR}%02d${WITHOUT_COLOR} sec\r" $timer
@@ -26,7 +26,7 @@ for (( timer=10; timer>0; timer-- ))
 BALANCE=$(planqd query bank balances ${DELEGATOR_ADDRESS} --node ${NODE} -o json | jq -r '.balances | .[].amount')
 echo -e "BALANCE: ${GREEN_COLOR}${BALANCE}${WITHOUT_COLOR} aplanq\n"
         echo -e "Claim rewards\n"
-        echo -e "${password}\n${password}\n" | planqd tx distribution withdraw-all-rewards --gas="1000000" --gas-adjustment="1.15" --gas-prices="30000000000aplanq" --chain-id planq_7070-2 --from ${KEY_NAME} --node ${NODE} --yes
+        echo -e "${password}\n${password}\n" | planqd tx distribution withdraw-all-rewards --gas="1000000" --gas-adjustment="1.15" --gas-prices="30000000000aplanq" --chain-id planq_7070-2 --from ${KEY_NAME} --node ${NODE} --yes | grep "raw_log\|txhash"
 for (( timer=10; timer>0; timer-- ))
         do
                 printf "* sleep for ${RED_COLOR}%02d${WITHOUT_COLOR} sec\r" $timer
@@ -37,7 +37,7 @@ BALANCE=$(planqd query bank balances ${DELEGATOR_ADDRESS} --node ${NODE} -o json
 echo -e "BALANCE: ${GREEN_COLOR}${BALANCE}${WITHOUT_COLOR} aplanq\n"
         echo -e "Stake ALL\n"
 if awk "BEGIN {return_code=($BALANCE > $ONE_PLANQ) ? 0 : 1; exit} END {exit return_code}";then
-            echo -e "${password}\n${password}\n" | planqd tx staking delegate ${VALIDATOR_ADDRESS} ${TX_AMOUNT}aplanq --gas="1000000" --gas-prices="30000000000aplanq" --gas-adjustment="1.15" --chain-id=planq_7070-2 --from ${KEY_NAME} --node ${NODE}  --yes
+            echo -e "${password}\n${password}\n" | planqd tx staking delegate ${VALIDATOR_ADDRESS} ${TX_AMOUNT}aplanq --gas="1000000" --gas-prices="30000000000aplanq" --gas-adjustment="1.15" --chain-id=planq_7070-2 --from ${KEY_NAME} --node ${NODE}  --yes | grep "raw_log\|txhash"
         else
                                 echo -e "BALANCE: ${GREEN_COLOR}${BALANCE}${WITHOUT_COLOR} aplanq is lower than $ONE_PLANQ aplanq\n"
         fi
