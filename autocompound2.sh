@@ -60,7 +60,7 @@ if [ "$ANSWER" == "yes" ]; then
     AMOUNT=$(planqd query bank balances ${ADDRESS} --chain-id=${CHAIN} --node ${RPC_ADDRESS} --output json | jq -r '.balances[] | select(.denom=="'${COIN}'") | .amount')
     echo "-------------------------------------------------------------------"
     echo -e "$RED$(date +%F-%H-%M-%S)$NORMAL $YELLOW Balance = ${AMOUNT} ${COIN} $NORMAL"
-    DELEGATE=$((AMOUNT - ${ONE_PLANQ}))
+    DELEGATE=$(bc <<< "$AMOUNT - $ONE_PLANQ" )
 
     if [[ $DELEGATE > 0 && $DELEGATE != "null" ]]; then
         echo "-------------------------------------------------------------------"
