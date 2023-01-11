@@ -33,7 +33,7 @@ for (( timer=10; timer>0; timer-- ))
                 sleep 1
         done
 BALANCE=$(planqd query bank balances ${DELEGATOR_ADDRESS} --node ${NODE} -o json | jq -r '.balances | .[].amount');
-        TX_AMOUNT=$(expr $BALANCE - 1000000000000000000)
+        TX_AMOUNT=$(bc <<< "$BALANCE - $ONE_PLANQ" )
 echo -e "BALANCE: ${GREEN_COLOR}${BALANCE}${WITHOUT_COLOR} aplanq\n"
         echo -e "Stake ALL\n"
 if awk "BEGIN {return_code=($BALANCE > $ONE_PLANQ) ? 0 : 1; exit} END {exit return_code}";then
